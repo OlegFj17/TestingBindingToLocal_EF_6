@@ -5,10 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestingBindingToLocal_EF_6
-{
-    /// <summary>
-    /// тестовая сущность для БД
-    /// </summary>
+{   
     public class Shop
     {
         public int ShopId { get; set; }

@@ -27,7 +27,7 @@ namespace TestingBindingToLocal_EF_6
 
         private ObservableCollection<Shop>? shopsCollection = new();
         /// <summary>
-        /// к этому свойству в XAML делается привязка 
+        /// the property to which the binding is made in xaml
         /// </summary>
         public ObservableCollection<Shop>? ShopsCollection
         {
@@ -41,40 +41,16 @@ namespace TestingBindingToLocal_EF_6
         
         public MainWindow() 
         {
-
-            Db = new DbCtx();
-
-            //связываемся с коллекцией Local
-            ShopsCollection = Db.Shops.Local.ToObservableCollection();            
-
-            //закачиваем первую запись для наглядности, остальные кнопками
-            Db.Shops.FirstOrDefault(s => s.Name == "Shop1");
-
+            Db = new DbCtx();            
+            ShopsCollection = Db.Shops.Local.ToObservableCollection();
             DataContext = this;
             InitializeComponent();
-        }
+        }        
 
-        private void Button_Sync(object sender, RoutedEventArgs e)
+        private async void Button_AsyncLoad(object sender, RoutedEventArgs e)
         {
             try
             {
-                //закачиваем следующую запись, это изменяет Local-коллекцию
-                //но в главном потоке, поэтому всё ок.
-                Db.Shops.FirstOrDefault(s => s.Name == "Shop2");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"{ex}");
-            }
-        }
-
-        private async void Button_Async(object sender, RoutedEventArgs e)
-        {
-            try
-            {               
-                //закачиваем следующую запись асинхронно, это изменяет Local-коллекцию через другой поток
-                //поэтому получаем исключение, что SourceCollection для ICollectionView (встроенная, из DataGrid)
-                //не может быть изменен из потока отличного от главного(UI)
                 await Db.Shops.LoadAsync();
             }
             catch (Exception ex)
@@ -82,19 +58,11 @@ namespace TestingBindingToLocal_EF_6
                 System.Diagnostics.Debug.WriteLine($"{ex.Message}");
             }
         }
-
-        private async void Button_Async_Dispatcher(object sender, RoutedEventArgs e)
+        private void Button_Sync(object sender, RoutedEventArgs e)
         {
-            //имитируем какую-то дополнительную работу асинхронного метода
-            await Task.Delay(1000).ConfigureAwait(false);
             try
             {
-                //здесь по сути происходит синхронное обращение к БД из UI
-                //если запрос большой, то UI виснет;
-                //если отключить БД("нет соединения"), то UI виснет ровно на 10 секунд и только потом
-                //выводит исключение, что БД не доступна
-                await Application.Current.Dispatcher.InvokeAsync(
-                    () => Db.Shops.FirstOrDefault(s => s.Name == "Shop4"));
+                _ = Db.Shops.FirstOrDefault();
             }
             catch (Exception ex)
             {
