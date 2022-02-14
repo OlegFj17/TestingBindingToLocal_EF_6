@@ -7,15 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindow" WindowState="Maximized" >
     <Grid>
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="20">
-            <Button Content="Sync Load" Width="100" Height="50"  Margin="10"
-                Click="Button_Sync"/>
-            <Button Content="Async Load with Exception" MinWidth="100" Height="50" Margin="10" Padding="5"
-                Click="Button_Async"/>
-            <Button Content="Async Load with Dispatcher" MinWidth="100" Height="50" Margin="10" Padding="5"
-                Click="Button_Async_Dispatcher"/>
-        </StackPanel>
+        <Button Content="Sync Load" MinWidth="200" Height="50" Margin="10" Padding="5"
+                Click="Button_Sync" VerticalAlignment="Top" HorizontalAlignment="Center"/>
+        <Button Content="Async Load with Exception" MinWidth="200" Height="50" Margin="10,100,10,10" Padding="5"
+                Click="Button_AsyncLoad" VerticalAlignment="Top" HorizontalAlignment="Center"/>
         <DataGrid ItemsSource="{Binding ShopsCollection, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="True" Width="500" Height="500"/>
-
     </Grid>
 </Window>
